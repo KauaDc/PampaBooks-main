@@ -100,10 +100,44 @@ exports.cadastroLivro = async (req, res) => {
 
 }
 
+
+
+exports.processoCadastroLivro = async (req, res) => {
+const { titulo, autor, descricao, categorias, preco } = req.body;
+const capa = req.file;
+
+const formData = new FormData();
+formData.append('titulo', titulo);
+formData.append('autor', autor);
+formData.append('descricao', descricao);
+formData.append('categorias', categorias);
+formData.append('preco', preco);
+
+if (capa) {
+formData.append('capa', capa.buffer.toString('base64'));
+}
+console.log(formData)
+try {
+const response = await axios.post('http://localhost:3002/api/catalogo/livros', formData, {
+headers: {
+...formData.getHeaders()
+}
+});
+console.log(response);
+res.redirect('/');
+} catch (erro) {
+console.error('Erro ao adicionar livro:', erro.message);
+res.render('cadastroLivro', {
+error: "Erro ao adicionar livro"
+});
+}
+};
+
+/*
 exports.processoCadastroLivro = async (req, res) => {
    const { titulo, autor, descricao, categorias } = req.body;
    const capa = req.file;
-   
+
    const formData = new FormData();
    formData.append('titulo', titulo);
    formData.append('autor', autor);
@@ -111,16 +145,16 @@ exports.processoCadastroLivro = async (req, res) => {
    formData.append('categorias', categorias);
 
    if(capa){
-      formData.append('capa', capa.buffer, capa.originalname);
+      formData.append('capa', capa.buffer.toString('base64'));
    }
-
+console.log(formData)
    try {
       const response = await axios.post('http://localhost:3002/api/catalogo/livros',formData,{
          headers:{
-            ...formData.getHeaders
+            ...formData.getHeaders()
          }
       })
-
+      console.log(response)
       res.redirect('/');
    } catch (erro) {
       if (erro) {
@@ -132,7 +166,7 @@ exports.processoCadastroLivro = async (req, res) => {
       }
    }
 }
-
+*/
 //rotas pedidos
 exports.pedidos = async (req, res) => {
    res.render('pedidos');

@@ -4,7 +4,7 @@ const {GridFSBucket} = require('mongodb');
 
 exports.adicionarLivro = async (req, res) => {
    const { titulo, autor, descricao, categorias, preco } = req.body;
-   const novaCapa = req.file.id; // Obtém o ID do arquivo da imagem do GridFS
+   const novaCapa = req.file ? req.file.buffer.toString('base64') : null;
  
    const novoLivro = new Livro({
      capa: novaCapa,
