@@ -1,4 +1,5 @@
 const axios = require('axios');
+const FormData = require('form-data');
 
 
 
@@ -92,7 +93,7 @@ exports.paginaCatalogo = async (req, res) => {
 exports.cadastroLivro = async (req, res) => {
    try {
       const resposta = await axios.get('http://localhost:3002/api/catalogo/categorias');
-      res.render('cadastroLivro', { categorias: resposta.data.categoria});
+      res.render('cadastroLivro', { categorias: resposta.data});
    } catch (erro) {
       console.error('Erro ao buscar categorias:', erro.message);
    }
@@ -100,25 +101,25 @@ exports.cadastroLivro = async (req, res) => {
 }
 
 exports.processoCadastroLivro = async (req, res) => {
-   const {
-      capa,
-      titulo,
-      autor,
-      preco,
-      descricao,
-      categorias
-   } = req.body;
+   const { titulo, autor, descricao, categorias } = req.body;
+   const capa = req.file;
+   
+   const formData = new FormData();
+   formData.append('titulo', titulo);
+   formData.append('autor', autor);
+   formData.append('descricao', descricao);
+   formData.append('categorias', categorias);
 
+   if(capa){
+      formData.append('capa', capa.buffer, capa.originalname);
+   }
 
    try {
-      const response = await axios.post('http://localhost:3002/api/catalogo/livros', {
-         capa,
-         titulo,
-         autor,
-         preco,
-         descricao,
-         categorias
-      });
+      const response = await axios.post('http://localhost:3002/api/catalogo/livros',formData,{
+         headers:{
+            ...formData.getHeaders
+         }
+      })
 
       res.redirect('/');
    } catch (erro) {
