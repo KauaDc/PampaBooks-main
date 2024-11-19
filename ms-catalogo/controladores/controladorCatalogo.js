@@ -3,11 +3,12 @@ const Categoria = require('../modelos/Categorias');
 const {GridFSBucket} = require('mongodb');
 
 exports.adicionarLivro = async (req, res) => {
-   const { titulo, autor, descricao, categorias, preco } = req.body;
-   const novaCapa = req.file ? req.file.buffer.toString('base64') : null;
+   const {capa, titulo, autor, descricao, categorias, preco } = req.body;
  
+ 
+console.log(capa, titulo, autor, descricao, categorias, preco)
    const novoLivro = new Livro({
-     capa: novaCapa,
+     capa,
      titulo,
      autor,
      descricao,

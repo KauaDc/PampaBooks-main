@@ -77,7 +77,7 @@ exports.processoCadastro = async (req, res) => {
 exports.paginaCatalogo = async (req, res) => {
    try {
       const resposta = await axios.get('http://localhost:3002/api/catalogo/livros');
-
+      console.log(resposta.data.livro)
       res.render('index', {
          livros: resposta.data.livro,
          categorias: resposta.data.categoria

@@ -1,36 +1,33 @@
 <div class="container">
+    <div class="row">
+    <h1 class="text-center">Catálogo</h1>
     
-<div class="row">
-<h1 class="text-center">Catálogo</h1>
-
     <div class="col-lg-3 filtros">
-        <h4>Filtros</h4>
-        <hr>
-
-        <h5>Categorias</h5>
-        <% if (Array.isArray(categorias) && categorias.length > 0) { %>
-        <% categorias.forEach(categoria => { %>
-        <div class="form-group">
-        <input type="hidden" name="" id="" value="<%= categoria._id %>">
-        <input type="checkbox" id="<%= categoria._id %>">
-        <label for="<%= categoria._id %>"><%= categoria.nome %> ( <%= categoria.quantLivros %> )</label>
-        </div>
-        <% }) %>
-        <% } else { %>
-        <p>Nenhuma categoria disponível.</p>
-        <% } %>
-        </div>
-
-
-
+    <h4>Filtros</h4>
+    <hr>
+    
+    <h5>Categorias</h5>
+    <% if (Array.isArray(categorias) && categorias.length > 0) { %>
+    <% categorias.forEach(categoria => { %>
+    <div class="form-group">
+    <input type="hidden" name="" id="" value="<%= categoria._id %>">
+    <input type="checkbox" id="<%= categoria._id %>">
+    <label for="<%= categoria._id %>"><%= categoria.nome %> ( <%= categoria.quantLivros %> )</label>
+    </div>
+    <% }) %>
+    <% } else { %>
+    <p>Nenhuma categoria disponível.</p>
+    <% } %>
+    </div>
+    
     <div class="col-lg-9">
     <div class="row">
     <% if (Array.isArray(livros) && livros.length > 0) { %>
     <% livros.forEach(livro => { %>
-    <div class="col-md-4  ">
+    <div class="col-md-4">
     <div class="livro-card">
-        <img src="data:image/jpeg;base64,<%= livro.capa %>" alt="Capa do Livro <%= livro.titulo %>" class="capa-livro" />
-            <div class="titulo-autor">
+    <img src="data:image/jpeg;base64,<%= livro.capa %>" alt="Capa do Livro">
+    <div class="titulo-autor">
     <h5><%= livro.titulo %></h5>
     <p><%= livro.autor %></p>
     </div>
@@ -50,8 +47,4 @@
     </div>
     </div>
     </div>
-    </div> 
-    <script>
-
-
-    </script>
+    </div>
