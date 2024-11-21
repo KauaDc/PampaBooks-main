@@ -5,5 +5,4 @@ const rota = express.Router();
 
 rota.post('/login', authController.login);
 rota.post('/registro', authController.registro);
-
   module.exports = rota;

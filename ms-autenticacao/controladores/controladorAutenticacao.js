@@ -18,16 +18,16 @@ exports.login = async (req, res) => {
     if (!senhaValida) {
       return res.status(400).json({ mensagem: 'Senha inválida' });
     }
+    const sessaoUsuario = { id: usuario._id , nome: usuario.nome , email:usuario.email}
     const token = jwt.sign({ id: usuario._id }, segredo, {expiresIn: '1h'});
     res.cookie('token', token, { httpOnly: true });
-    res.status(200).json({ mensagem: 'Login realizado com sucesso', token})
+    res.status(200).json({ mensagem: 'Login realizado com sucesso', token , sessaoUsuario})
 
 
 } catch (erro) {
     res.status(500).json({ mensagem: 'Erro ao fazer login', erro });
   }
 }
-
 
 
 

@@ -1,0 +1,12 @@
+.livro-card {
+    border: 1px solid #e1e1e1;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .capa-livro {
+    width: 100%;
+    height: auto;
+  }
+  .filtros {
+    margin-bottom: 32px;
+  }
