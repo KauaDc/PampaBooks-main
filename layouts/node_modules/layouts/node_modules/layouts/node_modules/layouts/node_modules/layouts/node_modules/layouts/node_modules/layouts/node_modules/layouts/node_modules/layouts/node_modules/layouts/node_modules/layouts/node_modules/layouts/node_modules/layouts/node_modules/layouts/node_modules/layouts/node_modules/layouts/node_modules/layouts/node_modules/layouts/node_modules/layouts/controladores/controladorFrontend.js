@@ -131,11 +131,21 @@ error: "Erro ao adicionar livro"
 
 //rotas pedidos
 exports.pedidos = async (req, res) => {
-   res.render('pedidos');
+   const usuarioid = req.session.usuario.id
+   console.log(usuarioid)
+   try{
+      const resposta =  await axios.get(`http://localhost:3005/api/pedidos/usuario/${usuarioid}/pedidos`);
+      console.log(resposta.data);
+      res.render('pedidos', {pedidos: resposta.data});
+
+   }
+   catch(erro){
+      console.error('Erro ao buscar pedidos:', erro.message);
+   }
 }
 
 exports.processoPedidos = async (req, res) => {
-   const usuarioid = req.session.usuario.id;
+   const usuarioid = req.session.usuario.id
    const livro = { livroId: req.body.livroId, preco: req.body.preco};
    try {
        const resposta = await axios.post('http://localhost:3005/api/pedidos/criarpedido', { usuarioid, livro});

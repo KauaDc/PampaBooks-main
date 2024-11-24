@@ -1,3 +1,60 @@
+<div class="container mt-4">
+    <h2>Seus pedidos</h2>
+    <div class="row">
+        <% pedidos.forEach(function(pedido) { %>
+
+            <% pedido.items.map((livros)=>{ %>
+            <div class="col mb-3">
+                <div class="card" >
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Detalhes do produto -->
+                            <div class="col-md-2">
+                                <img src="data:image/jpeg;base64,<%= livros.livroDetalhes.capa %>" alt="Capa do Livro"  class="img-fluid">
+                            </div>
+                            <div class="col-md-4">
+                                <h5 class="card-title"><%= livros.livroDetalhes.titulo %></h5>
+                                <p class="card-text" ><%=livros.livroDetalhes.descricao%></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="card-text">Preço: <%= livros.preco %></p>
+                                <p class="card-text">Quantidade: <%= livros.quantidade %></p>
+                                <button class="btn btn-danger btn-sm">Excluir</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+            
+            <div class="row justify-content-end sticky-bottom">
+                <div class="col-md-4">
+                    <ul class="list-group mb-3">
+                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                            <div>
+                                <h6 class="my-0">Total:</h6>
+                            </div>
+                            <span>R$<%= pedido.total %></span>
+
+                        </li>
+                    </ul>
+                    <button class="btn btn-primary btn-lg btn-block">Continuar</button>
+                </div>
+            </div>
+        </div>
+        
+        <% }); %>
+    </div>
 
 
-<p>Consegui</p>
+
+
+
+
+
+
+
+
+
+

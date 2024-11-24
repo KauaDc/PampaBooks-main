@@ -1,4 +1,5 @@
 const Pedido = require('../modelos/pedido');
+const axios = require('axios');
 // Função para calcular o total do pedido
 const calcularTotalPedido = (items) => {
   let total = 0;
@@ -63,9 +64,47 @@ res.status(500).send('Erro ao adicionar livro ao pedido: ' + error.message);
 };
 
 exports.listarPedidos = async (req, res) => {
+  const {usuarioid} = req.params;
+  console.log('Listando pedidos para o usuário:', usuarioid);
+ try {
+let pedidos = await Pedido.find({ usuarioid: usuarioid });
+console.log('Pedidos encontrados:', pedidos);
 
+if (!pedidos || pedidos.length === 0) {
+return res.status(404).send('Nenhum pedido encontrado para este usuário');
+}
 
+const pedidosComDetalhes = await Promise.all(pedidos.map(async (pedido) => {
+const itemsComDetalhes = await Promise.all(pedido.items.map(async (item) => {
+try {
+const respostaLivro = await axios.get(`http://localhost:3002/api/catalogo/livros/${item.livro}`);
+return {
+...item.toObject(),
+livroDetalhes: respostaLivro.data
 };
+} catch (erro) {
+console.error(`Erro ao buscar detalhes do livro ${item.livro}:`, erro.message);
+return {
+...item.toObject(),
+livroDetalhes: null
+};
+}
+}));
+
+return {
+...pedido.toObject(),
+items: itemsComDetalhes
+};
+}));
+
+// Retornar a resposta em JSON com os detalhes completos
+res.json(pedidosComDetalhes);
+} catch (error) {
+console.error('Erro ao listar pedidos:', error.message);
+res.status(500).send('Erro ao listar pedidos: ' + error.message);
+}
+}
+
 
 exports.obterPedidoPorId = async (req, res) => {
   // Implementar lógica para obter detalhes de um pedido específico...

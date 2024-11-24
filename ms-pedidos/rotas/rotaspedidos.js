@@ -4,9 +4,7 @@ const pedidoController = require('../controladores/controladorpedidos');
 
 router.post('/criarpedido', pedidoController.criarPedido);
 
-//router.put('/:pedidoId', pedidoController.adicionarLivroPedido);
-
-//router.get('/:pedidoId', pedidoController.obterPedidoPorId);
+router.get('/usuario/:usuarioid/pedidos', pedidoController.listarPedidos);
 
 //router.get('/usuario/:usuarioId', pedidoController.obterPedidosPorUsuario);
 

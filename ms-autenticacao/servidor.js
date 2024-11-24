@@ -18,9 +18,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-});
+mongoose.connect(process.env.MONGO_URI);
 
 mongoose.connection.on('connected', () => {
   console.log('Conectado ao MongoDB com sucesso!');

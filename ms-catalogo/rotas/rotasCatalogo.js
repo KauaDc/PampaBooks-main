@@ -11,6 +11,6 @@ rota.get('/livros', controladorCatalogo.listarLivros)
 rota.get('/categorias', controladorCatalogo.listarCategorias)
 rota.post('/livros', upload.single('capa'), controladorCatalogo.adicionarLivro)
 rota.post('/categorias', controladorCatalogo.adiconarCategoria)
-
+rota.get('/livros/:livroId', controladorCatalogo.listarLivrosporId)
 
 module.exports = rota

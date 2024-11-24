@@ -88,3 +88,19 @@ exports.listarCategorias = async (req, res) => {
       res.status(500).send('Erro ao listar categorias: ' + erro)
    }
 }
+exports.listarLivrosporId = async (req, res) => {
+   const { livroId } = req.params;
+ 
+
+try {
+const livro = await Livro.findById(livroId).populate('categorias');
+
+if (!livro) {
+return res.status(404).send('Livro não encontrado');
+}
+res.json(livro);
+} catch (error) {
+console.error('Erro ao buscar detalhes do livro:', error.message);
+res.status(500).send('Erro ao buscar detalhes do livro: ' + error.message);
+}
+}
