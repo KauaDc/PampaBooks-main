@@ -30,7 +30,7 @@ mongoose.connection.on('error', (err) => {
 
 app.use('/api/autenticacao', rotasAutenticacao);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Servidor de Autenticação rodando na porta ${PORT}`);
 });

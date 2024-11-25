@@ -7,6 +7,8 @@ const expressLayouts = require('express-ejs-layouts')
 const bodyParser = require('body-parser');
 const session = require('express-session')
 const flash = require('connect-flash');
+require('dotenv').config();
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -40,6 +42,6 @@ const rotasFrontend = require('./rotas/rotasFrontend')
 app.use('/', rotasFrontend)
 
 
-app.listen(3004, () => {
+app.listen( process.env.PORT, () => {
    console.log('Servidor rodando na porta 3004')
 })
