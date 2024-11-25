@@ -1,3 +1,4 @@
+const { default: mongoose } = require('mongoose');
 const Pedido = require('../modelos/pedido');
 const axios = require('axios');
 // Função para calcular o total do pedido
@@ -20,10 +21,9 @@ const calcularTotalPedido = (items) => {
 
 exports.criarPedido = async (req, res) => {
   const { usuarioid, livro } = req.body;
-console.log('Usuário:', usuarioid, 'Livro:', livro);
 try {
 // Verificar se existe um pedido pendente para o usuário
-let pedido = await Pedido.findOne({ usuarioid: usuarioid });
+let pedido = await Pedido.findOne({ usuarioid: usuarioid, status: 'pendente' });
 
 if (!pedido) {
 // Se não existe, criar um novo pedido
@@ -65,10 +65,8 @@ res.status(500).send('Erro ao adicionar livro ao pedido: ' + error.message);
 
 exports.listarPedidos = async (req, res) => {
   const {usuarioid} = req.params;
-  console.log('Listando pedidos para o usuário:', usuarioid);
  try {
 let pedidos = await Pedido.find({ usuarioid: usuarioid });
-console.log('Pedidos encontrados:', pedidos);
 
 if (!pedidos || pedidos.length === 0) {
 return res.status(404).send('Nenhum pedido encontrado para este usuário');
@@ -114,6 +112,64 @@ exports.obterPedidosPorUsuario = async (req, res) => {
   // Implementar lógica para listar todos os pedidos de um usuário...
 };
 
-exports.cancelarPedido = async (req, res) => {
-  // Implementar lógica para cancelar um pedido...
+exports.removerLivroPedidoPorQuantidade = async (req, res) => {
+  const { pedidoId, livroId } = req.params;
+    const { quantidade } = req.body;
+
+    try {
+        console.log('Removendo', quantidade, 'do item', livroId, 'do pedido', pedidoId);
+        const pedido = await Pedido.findById(pedidoId);
+
+        if (pedido) {
+            let itemEncontrado = false;
+
+            pedido.items = pedido.items.map(item => {
+                if (item._id.toString() === livroId) {
+                    itemEncontrado = true;
+
+                    if (item.quantidade > quantidade) {
+                        item.quantidade -= quantidade; // Reduz a quantidade
+                    } else {
+                        return null; // Marca para remoção se quantidade a ser removida for igual ou maior
+                    }
+                }
+                return item;
+            }).filter(item => item !== null); // Filtra itens null (removidos)
+
+            if (!itemEncontrado) {
+                return res.status(404).json({ message: 'Item não encontrado no pedido' });
+            }
+
+            pedido.total = calcularTotalPedido(pedido.items);
+            await pedido.save();
+            res.status(200).json({ message: 'Quantidade do item ajustada ou removido com sucesso' });
+        } else {
+            res.status(404).json({ message: 'Pedido não encontrado' });
+        }
+    } catch (err) {
+        console.error('Erro ao remover a quantidade do item do pedido:', err.message);
+        res.status(500).json({ message: 'Erro ao remover a quantidade do item: ' + err.message });
+    }
 };
+
+
+exports.finalizarPedido = async (req, res) => {
+  const { pedidoId } = req.params;
+  
+  try {
+  console.log('Finalizando o pedido', pedidoId);
+  const pedido = await Pedido.findById(pedidoId);
+  
+  if (pedido) {
+  pedido.status = 'concluido';
+  await pedido.save();
+  res.status(200).json({ message: 'Pedido concluído com sucesso' });
+  } else {
+  res.status(404).json({ message: 'Pedido não encontrado' });
+  }
+  } catch (err) {
+  console.error('Erro ao finalizar o pedido:', err.message);
+  res.status(500).json({ message: 'Erro ao finalizar o pedido: ' + err.message });
+  }
+  };
+  

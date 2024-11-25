@@ -1,13 +1,10 @@
 
 <div class="container">
-    <% if(usuario){ %>
-        <h1><%=usuario.nome%></h1>
-     <% } %>
+
     <div class="row">
     <h1 class="text-center">Catálogo</h1>
         
     <div class="col-lg-3 filtros">
-    <h4>Filtros</h4>
     <hr>
     
     <h5>Categorias</h5>
@@ -31,9 +28,9 @@
                 <% if (Array.isArray(livros) && livros.length > 0) { %>
                 <% livros.forEach(livro => { %>
                 <div class="col-md-5 mb-4">
-                <div class="card" style="width: 18rem;">
+                <div class="card" >
                 <div class="header">
-                <div class="image">
+                <div class="image ">
                 <img src="data:image/jpeg;base64,<%= livro.capa %>" alt="Capa do Livro" >
                 <span class="tag"><%= livro.categorias.nome %></span>
                 </div>
@@ -47,8 +44,15 @@
                 <form action="/criarpedido" method="post">
                 <input type="hidden" name="livroId" value="<%= livro._id %>">
                 <input type="hidden" name="preco" value="<%= livro.preco %>">
-                <button type="submit" class="btn btn-primary">+</button>
+                <div class="botao-container">
+
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-cart-plus"></i></button>
                 </form>
+                <form action="/avaliacoes" method="get">
+                <input type="hidden" name="livroId" value="<%= livro._id %>">
+                <button type="submit" class="btn btn-secondary"><i class="fa-solid fa-comment"></i></button>
+                </form>
+                </div>
                 </div>
                 </div>
                 </div>

@@ -1,18 +1,19 @@
 const axios = require('axios');
 const FormData = require('form-data');
 const session = require('express-session');
+const Pedido = require('../../ms-pedidos/modelos/pedido');
+const avaliacao = require('../../ms-avaliacao/modelos/avaliacao');
 
 
 
 
 //pagina login
 exports.paginaLogin = (req, res) => {
-   res.render('login', {usuario: req.usuario});
+   res.render('login', {usuario: null});
 };
 
 exports.processoLogin = async (req, res) => {
    const { email, senha } = req.body;
-   //console.log(email, senha);
    try {
     
    const resposta = await axios.post('http://localhost:3000/api/autenticacao/login',{ email, senha });
@@ -23,11 +24,25 @@ exports.processoLogin = async (req, res) => {
    }
    }
    
-
+//logout
+exports.logout = async(req, res) => {
+   try {
+      const resposta = await axios.post('http://localhost:3000/api/autenticacao/logout')
+      req.session.destroy((err) => {
+         if (err) {
+         console.error('Erro ao destruir a sessão:', err);
+         res.status(500).send('Erro ao fazer logout.');
+         } 
+         res.redirect('/'); // Altere para a rota desejada após o logout
+         });
+   }catch(erro){
+      console.log(erro)
+   }
+}
 
 //pagina de cadastro
 exports.paginaCadastro = (req, res) => {
-   res.render('cadastro');
+   res.render('cadastro', {usuario: null});
 }
 
 
@@ -45,7 +60,7 @@ exports.processoCadastro = async (req, res) => {
    }
 
    try {
-      const response = await axios.post('http://localhost:3001/api/autenticacao/registro', {
+      const response = await axios.post('http://localhost:3000/api/autenticacao/registro', {
          nome,
          email,
          senha
@@ -68,8 +83,6 @@ exports.processoCadastro = async (req, res) => {
 //rotas catalogo
 
 exports.paginaCatalogo = async (req, res) => {
-   //console.log("usuario:",req.session.usuario);
-   console.log(req.session.usuario)
    try {
       const resposta = await axios.get('http://localhost:3002/api/catalogo/livros');
       res.render('index', {
@@ -118,7 +131,6 @@ headers: {
 ...formData.getHeaders()
 }
 });
-console.log(response);
 res.redirect('/');
 } catch (erro) {
 console.error('Erro ao adicionar livro:', erro.message);
@@ -132,10 +144,8 @@ error: "Erro ao adicionar livro"
 //rotas pedidos
 exports.pedidos = async (req, res) => {
    const usuarioid = req.session.usuario.id
-   console.log(usuarioid)
    try{
       const resposta =  await axios.get(`http://localhost:3005/api/pedidos/usuario/${usuarioid}/pedidos`);
-      console.log(resposta.data);
       res.render('pedidos', {pedidos: resposta.data});
 
    }
@@ -149,9 +159,72 @@ exports.processoPedidos = async (req, res) => {
    const livro = { livroId: req.body.livroId, preco: req.body.preco};
    try {
        const resposta = await axios.post('http://localhost:3005/api/pedidos/criarpedido', { usuarioid, livro});
-       res.json(resposta.data);
-   } catch (erro) {
+         res.redirect('/');
+      } catch (erro) {
        console.error('Erro ao adicionar livro ao pedido:', erro.message);
        res.status(500).send('Erro ao adicionar livro ao pedido: ' + erro.message);
    }
 }
+
+
+exports.removerQuantidade = async (req, res) => {
+   const {livroId,pedidoId,quantidade} = req.body
+   try {
+      const resposta = await axios.post(`http://localhost:3005/api/pedidos/removerquantidade/${pedidoId}/${livroId}`,{quantidade});
+      res.redirect('/pedidos')
+  } catch (erro) {
+      console.error('Erro ao remover livro do pedido:', erro.message);
+      res.status(500).send('Erro ao remover livro do pedido: ' + erro.message);
+  }
+
+}
+exports.finalizarPedido = async (req, res) => {
+   const { pedidoId } = req.body; // Corrigir para extrair pedidoId do corpo da requisição
+   try {
+   const resposta = await axios.post(`http://localhost:3005/api/pedidos/finalizarPedido/${pedidoId}`);
+   res.redirect("/");
+   } catch (erro) {
+   console.error('Erro ao finalizar pedido:', erro.message);
+   res.status(500).json({ message: 'Erro ao finalizar o pedido' }); // Adicionar tratamento de erro adequado
+   }
+   };
+
+//rotas avaliacao
+exports.paginaAvaliacao = async (req, res) => {
+   var usuarioId
+   if (req.session.usuario) {
+       usuarioId = req.session.usuario.id;
+   }else{
+       usuarioId = null;
+   }
+  const {livroId} = req.query
+   console.log(livroId)
+   try{
+      const resposta = await axios.get(`http://localhost:3006/api/avaliacao/${livroId}`);
+      console.log(resposta.data)
+      console.log(resposta.data)
+      if(resposta.data == null){
+         res.render('avaliacao', {usuario:usuarioId,livroId:livroId, avaliacao: null});
+      }
+      res.render('avaliacao', {usuario:usuarioId,livroId:livroId, avaliacao: resposta.data});
+}
+catch(erro){  
+   console.error('Erro ao buscar avaliações:', erro.message);
+}
+}
+
+
+
+
+exports.processoAvaliacao = async (req, res) => {
+   const { livroId, avaliacao, comentario } = req.body;
+   const usuarioId = req.session.usuario.id;
+   console.log(req.body)
+   try {
+     const resposta = await axios.post('http://localhost:3006/api/avaliacao/novaavaliacao', { usuarioId, livroId, avaliacao, comentario });
+     res.redirect('/');
+   } catch (erro) {
+     console.error('Erro ao avaliar livro:', erro.message);
+     res.status(500).send('Erro ao avaliar livro: ' + erro.message);
+   }
+ };

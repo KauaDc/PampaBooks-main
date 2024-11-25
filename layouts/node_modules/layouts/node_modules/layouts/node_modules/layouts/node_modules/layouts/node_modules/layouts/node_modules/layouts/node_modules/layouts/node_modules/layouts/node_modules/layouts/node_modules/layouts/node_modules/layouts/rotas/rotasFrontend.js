@@ -5,7 +5,6 @@ const autenticaToken = require('../middleware/autentica');
 const multer = require("multer")
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-const { renderizarIndex } = require('../controladores/controladorIndex');
 
 
 
@@ -17,5 +16,9 @@ router.post('/cadastro', frontendController.processoCadastro);
 router.get('/cadastrolivro', frontendController.cadastroLivro)
 router.post('/cadastrolivro',upload.single('capa'), frontendController.processoCadastroLivro);
 router.get('/pedidos',autenticaToken,frontendController.pedidos);
-router.post('/criarpedido',autenticaToken,frontendController.processoPedidos);
+router.post('/criarpedido',autenticaToken,frontendController.processoPedidos);router.post('/removeritemquant', frontendController.removerQuantidade)
+router.post('/finalizarpedido', frontendController.finalizarPedido)
+router.get('/avaliacoes',frontendController.paginaAvaliacao)
+router.post('/avaliacoes',frontendController.processoAvaliacao)
+router.post('/logout',frontendController.logout)
 module.exports = router;

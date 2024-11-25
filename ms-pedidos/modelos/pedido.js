@@ -33,8 +33,12 @@ const pedidoSchema = new Schema({
     type: Date,
     default: Date.now
   },
-
+  status:{
+    type: String,
+    default: 'pendente'
+  }
 })
+
 
 const Pedido = mongoose.model('Pedido', pedidoSchema);
 

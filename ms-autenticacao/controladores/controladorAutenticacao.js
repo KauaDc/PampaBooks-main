@@ -8,7 +8,6 @@ const cookieParser = require('cookie-parser');
 exports.login = async (req, res) => {
 
   const { email, senha } = req.body;
-  console.log(req.body); // Log para depuração
   try {
     const usuario = await User.findOne({ email });
     if (!usuario) {
@@ -35,18 +34,26 @@ exports.login = async (req, res) => {
 
 exports.registro = async (req, res) => {
   try {
-    console.log(req.body); // Log para depuração
-    const { email, senha } = req.body;
-    if (!email || !senha) {
-      return res.status(400).json({ mensagem: 'Email e senha são obrigatórios' });
-   }
-   const novoUsuario = new User({ email, senha });
-   await novoUsuario.save();
-   res.status(201).json({ mensagem: 'Usuário registrado com sucesso' });
- } catch (erro) {
-   res.status(400).json({ mensagem: 'Erro ao registrar usuário', erro });
- }
+  const { email, senha, nome } = req.body;
+  if (!email || !senha) {
+  return res.status(400).json({ mensagem: 'Email e senha são obrigatórios' });
+  }
+  
+  // Gerar um hash para a senha
+  const saltRounds = 10;
+  const senhaHashed = await bcrypt.hash(senha, saltRounds);
+  
+  const novoUsuario = new User({ email, senha: senhaHashed, nome });
+  await novoUsuario.save();
+  res.status(201).json({ mensagem: 'Usuário registrado com sucesso' });
+  } catch (erro) {
+  console.error('Erro ao registrar usuário:', erro.message);
+  res.status(400).json({ mensagem: 'Erro ao registrar usuário', erro });
+  }
+  };
 
-
-};
-
+exports.logout = async (req, res) => {
+    res.clearCookie('token');
+    res.status(200).json({ mensagem: 'Logout realizado com sucesso' });
+    };
+    

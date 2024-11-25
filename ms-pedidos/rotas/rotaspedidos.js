@@ -6,8 +6,7 @@ router.post('/criarpedido', pedidoController.criarPedido);
 
 router.get('/usuario/:usuarioid/pedidos', pedidoController.listarPedidos);
 
-//router.get('/usuario/:usuarioId', pedidoController.obterPedidosPorUsuario);
 
-//router.delete('/:pedidoId', pedidoController.cancelarPedido);
-
+router.post('/removerquantidade/:pedidoId/:livroId', pedidoController.removerLivroPedidoPorQuantidade);
+router.post('/finalizarPedido/:pedidoId', pedidoController.finalizarPedido);
 module.exports = router;

@@ -1,0 +1,55 @@
+
+  
+  <!-- Exibir Formulário de Nova Avaliação apenas se o usuário estiver logado -->
+  <% if (usuario) { %>
+  <div class="card mb-4">
+  <div class="card-body">
+  <h5 class="card-title">Adicionar Avaliação</h5>
+  <form id="formAvaliacao" method="post" action="/avaliacoes">
+  <div class="form-group">
+  <label for="avaliacao">Nota (1 a 5):</label>
+  <select id="avaliacao" name="avaliacao" class="form-control" required>
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4">4</option>
+  <option value="5">5</option>
+  </select>
+  </div>
+  <div class="form-group">
+  <label for="comentario">Comentário:</label>
+  <textarea id="comentario" name="comentario" class="form-control" rows="3" required></textarea>
+  </div>
+  <input type="hidden" id="livroId" name="livroId" value="<%= livroId %>">
+  <input type="hidden" id="usuarioId" name="usuarioId" value="<%= usuario %>"> <!-- Adapte para pegar o ID do usuário logado -->
+  <button type="submit" class="btn btn-primary">Enviar Avaliação</button>
+  </form>
+  </div>
+  </div>
+  <% } else { %>
+  <p>Por favor, <a href="/login">faça login</a> para adicionar uma avaliação.</p>
+  <% } %>
+  </div>
+
+  <div class="container mt-4">
+    <h2>Avaliações do Livro</h2>
+    
+    <!-- Verificar se há avaliações -->
+    <% if (avaliacao && avaliacao.length > 0) { %>
+    <!-- Exibir as avaliações -->
+    <div class="row" id="avaliacoesContainer">
+    <% avaliacao.forEach(avaliacao => { %>
+    <div class="col-md-4 mb-3">
+    <div class="card">
+    <div class="card-body">
+    <h5 class="card-title">Nota: <%= avaliacao.avaliacao %></h5>
+    <p class="card-text"><%= avaliacao.comentario %></p>
+    <p class="card-text"><small class="text-muted">Data: <%= new Date(avaliacao.data).toLocaleDateString() %></small></p>
+    </div>
+    </div>
+    </div>
+    <% }) %>
+    </div>
+    <% } else { %>
+    <p>Nenhuma avaliação encontrada.</p>
+    <% } %>
