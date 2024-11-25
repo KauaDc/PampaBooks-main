@@ -30,7 +30,7 @@ async function fazerLogin(email, senha) {
             email = document.getElementById('email').value;
             senha = document.getElementById('senha').value;
             event.preventDefault(); // Previne o comportamento padrão do formulário
-            const response = await fetch('http://localhost:3004/login', {
+            const response = await fetch('http://localhost:3001/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -41,6 +41,6 @@ async function fazerLogin(email, senha) {
 
     const data = await response.json();
     document.cookie = `token=${data.token}`; // Armazena o token em um cookie
- window.location.href = 'http://localhost:3004'; // Redireciona o usuário após o login
+ window.location.href = 'http://localhost:3001'; // Redireciona o usuário após o login
 }
     </script>

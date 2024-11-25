@@ -18,12 +18,10 @@ app.use(session({
    saveUninitialized: true
 })) 
 
-// Middleware flash para mensagens temporárias
 app.use(flash());
 
-// Middleware para adicionar informações do usuário logado às variáveis locais
 app.use((req, res, next) => {
-res.locals.user = req.session.usuario || null; // Atribuir usuário da sessão às variáveis locais
+res.locals.user = req.session.usuario || null;
 if (req.session.usuario) {
 res.locals.userlogado = req.session.usuario.nome;
 } else {
@@ -42,6 +40,6 @@ const rotasFrontend = require('./rotas/rotasFrontend')
 app.use('/', rotasFrontend)
 
 
-app.listen( process.env.PORT, () => {
-   console.log('Servidor rodando na porta 3004')
+app.listen( process.env.PORTA, () => {
+   console.log('Servidor rodando na porta', process.env.PORTA)
 })

@@ -1,5 +1,5 @@
 # Escolher uma imagem base
-FROM node:14
+FROM node:16
 
 # Definir o diretório de trabalho dentro do container
 WORKDIR /app
@@ -12,7 +12,7 @@ RUN npm install
 COPY . .
 
 # Expor a porta em que a aplicação vai rodar
-EXPOSE 3002
+EXPOSE 3000
 
 # Comando para iniciar a aplicação
 CMD ["npm", "start"]

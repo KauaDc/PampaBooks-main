@@ -6,7 +6,6 @@ exports.adicionarLivro = async (req, res) => {
    const {capa, titulo, autor, descricao, categorias, preco } = req.body;
  
  
-console.log(capa, titulo, autor, descricao, categorias, preco)
    const novoLivro = new Livro({
      capa,
      titulo,

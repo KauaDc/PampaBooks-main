@@ -1,8 +1,6 @@
 const axios = require('axios');
 const FormData = require('form-data');
 const session = require('express-session');
-const Pedido = require('../../ms-pedidos/modelos/pedido');
-const avaliacao = require('../../ms-avaliacao/modelos/avaliacao');
 
 
 
@@ -99,9 +97,15 @@ exports.paginaCatalogo = async (req, res) => {
 
 
 exports.cadastroLivro = async (req, res) => {
+   var usuarioId
+   if (req.session.usuario) {
+       usuarioId = req.session.usuario.id;
+   }else{
+       usuarioId = null;
+   }
    try {
       const resposta = await axios.get('http://localhost:3002/api/catalogo/categorias');
-      res.render('cadastroLivro', { categorias: resposta.data});
+      res.render('cadastroLivro', { categorias: resposta.data, usuario:usuarioId });
    } catch (erro) {
       console.error('Erro ao buscar categorias:', erro.message);
    }
@@ -146,7 +150,7 @@ exports.pedidos = async (req, res) => {
    const usuarioid = req.session.usuario.id
    try{
       const resposta =  await axios.get(`http://localhost:3005/api/pedidos/usuario/${usuarioid}/pedidos`);
-      res.render('pedidos', {pedidos: resposta.data});
+      res.render('pedidos', {pedidos: resposta.data, usuario: req.session.usuario});
 
    }
    catch(erro){

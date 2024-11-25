@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const rotasAutenticacao = require('./rotas/rotasAutenticacao');
 const cookieParser = require('cookie-parser');
-const cors = require('cors');
 
 
 const app = express();
@@ -30,7 +29,7 @@ mongoose.connection.on('error', (err) => {
 
 app.use('/api/autenticacao', rotasAutenticacao);
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORTA;
 app.listen(PORT, () => {
   console.log(`Servidor de Autenticação rodando na porta ${PORT}`);
 });
