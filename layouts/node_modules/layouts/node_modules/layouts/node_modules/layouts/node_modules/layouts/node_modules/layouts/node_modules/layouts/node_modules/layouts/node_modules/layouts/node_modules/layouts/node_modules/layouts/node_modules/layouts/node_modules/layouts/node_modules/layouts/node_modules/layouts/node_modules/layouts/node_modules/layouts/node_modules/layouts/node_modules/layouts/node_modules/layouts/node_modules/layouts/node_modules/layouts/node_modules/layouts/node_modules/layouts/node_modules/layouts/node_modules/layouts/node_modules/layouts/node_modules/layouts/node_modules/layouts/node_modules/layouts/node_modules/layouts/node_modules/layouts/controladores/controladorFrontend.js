@@ -31,7 +31,7 @@ exports.logout = async(req, res) => {
          console.error('Erro ao destruir a sessão:', err);
          res.status(500).send('Erro ao fazer logout.');
          } 
-         res.redirect('/'); // Altere para a rota desejada após o logout
+         res.redirect('/'); 
          });
    }catch(erro){
       console.log(erro)
@@ -183,13 +183,13 @@ exports.removerQuantidade = async (req, res) => {
 
 }
 exports.finalizarPedido = async (req, res) => {
-   const { pedidoId } = req.body; // Corrigir para extrair pedidoId do corpo da requisição
+   const { pedidoId } = req.body; 
    try {
    const resposta = await axios.post(`http://localhost:3005/api/pedidos/finalizarPedido/${pedidoId}`);
    res.redirect("/");
    } catch (erro) {
    console.error('Erro ao finalizar pedido:', erro.message);
-   res.status(500).json({ message: 'Erro ao finalizar o pedido' }); // Adicionar tratamento de erro adequado
+   res.status(500).json({ message: 'Erro ao finalizar o pedido' });
    }
    };
 

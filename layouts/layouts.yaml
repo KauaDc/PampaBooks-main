@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: layouts
+spec:
+  containers:
+    - name: container-layouts
+      image: localhost/layouts:latest
+      ports:
+        - containerPort: 3001
+      resources:
+        limits:
+          memory: "512Mi"
+          cpu: "500m"
+      volumeMounts:
+        - name: codigo
+          mountPath: /app
+  volumes:
+    - name: codigo
+      hostPath:
+        path: /var/codigo

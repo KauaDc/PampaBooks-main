@@ -11,8 +11,6 @@
     <% if (Array.isArray(categorias) && categorias.length > 0) { %>
     <% categorias.forEach(categoria => { %>
     <div class="form-group">
-    <input type="hidden" name="" id="" value="<%= categoria._id %>">
-    <input type="checkbox" id="<%= categoria._id %>">
     <label for="<%= categoria._id %>"><%= categoria.nome %> ( <%= categoria.quantLivros %> )</label>
     </div>
     <% }) %>

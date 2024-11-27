@@ -104,13 +104,9 @@ res.status(500).send('Erro ao listar pedidos: ' + error.message);
 }
 
 
-exports.obterPedidoPorId = async (req, res) => {
-  // Implementar lógica para obter detalhes de um pedido específico...
-};
 
-exports.obterPedidosPorUsuario = async (req, res) => {
-  // Implementar lógica para listar todos os pedidos de um usuário...
-};
+
+
 
 exports.removerLivroPedidoPorQuantidade = async (req, res) => {
   const { pedidoId, livroId } = req.params;

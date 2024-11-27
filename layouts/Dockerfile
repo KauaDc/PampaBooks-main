@@ -1,18 +1,12 @@
-# Escolher uma imagem base
-FROM node:14
+    FROM node:14
 
-# Definir o diretório de trabalho dentro do container
-WORKDIR /app
+    WORKDIR /app
 
-# Copiar package.json e instalar dependências
-COPY package*.json ./
-RUN npm install
+    COPY package*.json ./
+    RUN npm install
 
-# Copiar o restante do código da aplicação
-COPY . .
+    COPY . .
 
-# Expor a porta em que a aplicação vai rodar
-EXPOSE 3001
+    EXPOSE 3001
 
-# Comando para iniciar a aplicação
-CMD ["npm", "start"]
+    CMD ["npm", "start"]

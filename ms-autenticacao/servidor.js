@@ -12,10 +12,7 @@ const app = express();
 app.use(bodyParser.json()); // Middleware para parsear JSON
 app.use(bodyParser.urlencoded({ extended: true })); // Middleware para parsear dados de formulário
 app.use(cookieParser());
-const corsOptions = {
-  credentials: true,
-};
-app.use(cors(corsOptions));
+
 
 mongoose.connect(process.env.MONGO_URI);
 

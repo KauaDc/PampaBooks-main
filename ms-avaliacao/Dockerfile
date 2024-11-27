@@ -1,5 +1,5 @@
 # Escolher uma imagem base
-FROM node:14
+FROM node:16
 
 # Definir o diretório de trabalho dentro do container
 WORKDIR /app

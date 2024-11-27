@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const User = require('../modelos/Usuario');
 const segredo = process.env.JWT_SECRET;
 const cookieParser = require('cookie-parser'); 
