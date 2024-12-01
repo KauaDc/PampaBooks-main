@@ -6,6 +6,6 @@ const rota = express.Router()
 rota.post('/novaavaliacao', controladorAvaliacao.adicionarAvaliacao)
 
 // Rota para listar avaliações de um livro
-rota.get('/avaliacoes/:livroId', controladorAvaliacao.listarAvaliacoes)
+rota.get('/:livroId', controladorAvaliacao.listarAvaliacoes)
 
 module.exports = rota
