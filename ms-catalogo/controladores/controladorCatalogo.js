@@ -2,10 +2,12 @@ const Livro = require('../modelos/Livros');
 const Categoria = require('../modelos/Categorias');
 const {GridFSBucket} = require('mongodb');
 const axios = require('axios');
+
+// Função para adicionar um novo livro
 exports.adicionarLivro = async (req, res) => {
-   const {capa, titulo, autor, descricao, categorias, preco } = req.body;
- 
- 
+   const { capa, titulo, autor, descricao, categorias, preco } = req.body;
+
+   // Cria um novo objeto de livro com os dados fornecidos
    const novoLivro = new Livro({
      capa,
      titulo,
@@ -14,36 +16,41 @@ exports.adicionarLivro = async (req, res) => {
      categorias,
      preco
    });
- 
+
    try {
+     // Salva o novo livro no banco de dados
      await novoLivro.save();
      console.log('Livro adicionado com sucesso');
-     res.status(201).send('Livro adicionado com sucesso');
+     res.status(201).send('Livro adicionado com sucesso'); // Retorna uma mensagem de sucesso com status 201
    } catch (erro) {
-     res.status(500).send('Erro ao adicionar livro: ' + erro.message);
+     res.status(500).send('Erro ao adicionar livro: ' + erro.message); // Em caso de erro, retorna uma mensagem de erro com status 500
    }
- };
- 
+};
 
+// Função para adicionar uma nova categoria
 exports.adiconarCategoria = async (req, res) => {
-   const {
-      nome
-   } = req.body
+   const { nome } = req.body;
+   
+   // Cria um novo objeto de categoria com os dados fornecidos
    const novaCategoria = new Categoria({
       nome
-   })
-   try {
-      await novaCategoria.save()
-      res.status(201).send('Categoria adicionada com sucesso')
-   } catch (erro) {
-      res.status(500).send('Erro ao adicionar categoria: ' + erro)
-   }
-}
+   });
 
-//////rotas GET
+   try {
+      // Salva a nova categoria no banco de dados
+      await novaCategoria.save();
+      res.status(201).send('Categoria adicionada com sucesso'); // Retorna uma mensagem de sucesso com status 201
+   } catch (erro) {
+      res.status(500).send('Erro ao adicionar categoria: ' + erro); // Em caso de erro, retorna uma mensagem de erro com status 500
+   }
+};
+
+// Função para listar todos os livros e suas categorias
 exports.listarLivros = async (req, res) => {
    try {
-      const categoria = await Categoria.aggregate([{
+      // Agrega categorias e conta a quantidade de livros em cada uma
+      const categoria = await Categoria.aggregate([
+         {
             $lookup: {
                from: 'livros',
                localField: '_id',
@@ -61,32 +68,37 @@ exports.listarLivros = async (req, res) => {
          {
             $addFields: {
                'quantLivros': {
-                  $size: '$livros'
+                  $size: '$livros' // Adiciona um campo 'quantLivros' com o tamanho do array 'livros'
                }
             }
          }
       ]);
 
+      // Busca todos os livros e popula o campo 'categorias'
       const livro = await Livro.find().populate('categorias');
       res.json({
          categoria,
          livro
-      })
-      console.log('Livros listados com sucesso')
+      }); // Retorna as categorias e os livros como resposta JSON
+      console.log('Livros listados com sucesso');
    } catch (erro) {
-      res.status(500).send('Erro ao listar livros: ' + erro)
+      res.status(500).send('Erro ao listar livros: ' + erro); // Em caso de erro, retorna uma mensagem de erro com status 500
    }
-}
+};
 
+// Função para listar todas as categorias
 exports.listarCategorias = async (req, res) => {
    try {
-      const categorias = await Categoria.find()
-      res.json(categorias)
-      console.log('Categorias listadas com sucesso')
+      // Busca todas as categorias no banco de dados
+      const categorias = await Categoria.find();
+      res.json(categorias); // Retorna as categorias como resposta JSON
+      console.log('Categorias listadas com sucesso');
    } catch (erro) {
-      res.status(500).send('Erro ao listar categorias: ' + erro)
+      res.status(500).send('Erro ao listar categorias: ' + erro); // Em caso de erro, retorna uma mensagem de erro com status 500
    }
-}
+};
+
+// Função para listar os detalhes de um livro por ID, incluindo avaliações
 exports.listarLivrosporId = async (req, res) => {
    const { livroId } = req.params;
 
@@ -95,7 +107,7 @@ exports.listarLivrosporId = async (req, res) => {
        const livro = await Livro.findById(livroId).populate('categorias');
 
        if (!livro) {
-           return res.status(404).send('Livro não encontrado');
+           return res.status(404).send('Livro não encontrado'); // Retorna 404 se o livro não for encontrado
        }
 
        // Buscar as avaliações do livro
@@ -127,23 +139,25 @@ exports.listarLivrosporId = async (req, res) => {
        res.json(detalhesComAvaliacoes);
    } catch (error) {
        console.error('Erro ao buscar detalhes do livro ou avaliações:', error.message);
-       res.status(500).send('Erro ao buscar detalhes do livro ou avaliações: ' + error.message);
+       res.status(500).send('Erro ao buscar detalhes do livro ou avaliações: ' + error.message); // Em caso de erro, retorna uma mensagem de erro com status 500
    }
 };
 
+// Função para listar os detalhes de um livro por ID
 exports.listarLivrosPedidos = async (req, res) => {
    const { livroId } = req.params;
- 
-   console.log('Buscando pedidos para o livro', livroId);
-try {
-const livro = await Livro.findById(livroId).populate('categorias');
 
-if (!livro) {
-return res.status(404).send('Livro não encontrado');
-}
-res.json(livro);
-} catch (error) {
-console.error('Erro ao buscar detalhes do livro:', error.message);
-res.status(500).send('Erro ao buscar detalhes do livro: ' + error.message);
-}
-}
+   console.log('Buscando pedidos para o livro', livroId);
+   try {
+      // Busca os detalhes do livro pelo ID e popula o campo 'categorias'
+      const livro = await Livro.findById(livroId).populate('categorias');
+
+      if (!livro) {
+         return res.status(404).send('Livro não encontrado'); // Retorna 404 se o livro não for encontrado
+      }
+      res.json(livro); // Retorna os detalhes do livro como resposta JSON
+   } catch (error) {
+      console.error('Erro ao buscar detalhes do livro:', error.message);
+      res.status(500).send('Erro ao buscar detalhes do livro: ' + error.message); // Em caso de erro, retorna uma mensagem de erro com status 500
+   }
+};

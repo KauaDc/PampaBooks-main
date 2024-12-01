@@ -133,39 +133,34 @@ exports.removerLivroPedidoPorQuantidade = async (req, res) => {
             }).filter(item => item !== null); // Filtra itens null (removidos)
 
             if (!itemEncontrado) {
-                return res.status(404).json({ message: 'Item não encontrado no pedido' });
+                return res.status(404).json({ message: 'Item não encontrado no pedido' }); // Retorna 404 se o item não for encontrado no pedido
             }
 
-            pedido.total = calcularTotalPedido(pedido.items);
-            await pedido.save();
-            res.status(200).json({ message: 'Quantidade do item ajustada ou removido com sucesso' });
+            pedido.total = calcularTotalPedido(pedido.items); // Recalcula o total do pedido
+            await pedido.save(); // Salva o pedido atualizado no banco de dados
+            res.status(200).json({ message: 'Quantidade do item ajustada ou removido com sucesso' }); // Retorna mensagem de sucesso
         } else {
-            res.status(404).json({ message: 'Pedido não encontrado' });
+            res.status(404).json({ message: 'Pedido não encontrado' }); // Retorna 404 se o pedido não for encontrado
         }
     } catch (err) {
         console.error('Erro ao remover a quantidade do item do pedido:', err.message);
-        res.status(500).json({ message: 'Erro ao remover a quantidade do item: ' + err.message });
+        res.status(500).json({ message: 'Erro ao remover a quantidade do item: ' + err.message }); // Em caso de erro, retorna uma mensagem de erro com status 500
     }
 };
 
-
+// Função para finalizar um pedido
 exports.finalizarPedido = async (req, res) => {
-  const { pedidoId } = req.params;
-  
+  const { pedidoId } = req.params; // Obtém o ID do pedido dos parâmetros da requisição
   try {
-  console.log('Finalizando o pedido', pedidoId);
-  const pedido = await Pedido.findById(pedidoId);
-  
-  if (pedido) {
-  pedido.status = 'concluido';
-  await pedido.save();
-  res.status(200).json({ message: 'Pedido concluído com sucesso' });
-  } else {
-  res.status(404).json({ message: 'Pedido não encontrado' });
-  }
+    const pedido = await Pedido.findById(pedidoId); // Busca o pedido pelo ID
+    if (!pedido) {
+      return res.status(404).json({ message: 'Pedido não encontrado' }); // Retorna 404 se o pedido não for encontrado
+    }
+    pedido.status = 'Finalizado'; // Atualiza o status do pedido para 'Finalizado'
+    await pedido.save(); // Salva o pedido atualizado no banco de dados
+    res.status(200).json({ message: 'Pedido finalizado com sucesso' }); // Retorna mensagem de sucesso
   } catch (err) {
-  console.error('Erro ao finalizar o pedido:', err.message);
-  res.status(500).json({ message: 'Erro ao finalizar o pedido: ' + err.message });
+    console.error('Erro ao finalizar o pedido:', err.message);
+    res.status(500).json({ message: 'Erro ao finalizar o pedido: ' + err.message }); // Em caso de erro, retorna uma mensagem de erro com status 500
   }
-  };
-  
+};
