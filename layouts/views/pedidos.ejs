@@ -1,0 +1,99 @@
+<div class="container mt-4">
+    <h2>Seus Pedidos</h2>
+    
+    <h3>Pedidos Pendentes</h3>
+    <div class="row">
+    <% const pedidosPendentes = pedidos.filter(pedido => pedido.status === 'pendente'); %>
+    <% if (pedidosPendentes.length > 0) { %>
+    <% pedidosPendentes.forEach(function(pedido) { %>
+    <% pedido.items.map((livros) => { %>
+    <div class="col mb-3">
+    <div class="card">
+    <div class="card-body">
+    <div class="row">
+    <div class="col-md-2">
+    <img src="data:image/jpeg;base64,<%= livros.livroDetalhes.capa %>" alt="Capa do Livro" class="img-fluid">
+    </div>
+    <div class="col-md-4">
+    <h5 class="card-title"><%= livros.livroDetalhes.titulo %></h5>
+    <p class="card-text"><%= livros.livroDetalhes.descricao %></p>
+    </div>
+    <div class="col-md-6">
+    <p class="card-text">Preço: <%= livros.preco %></p>
+    <p class="card-text">Quantidade: <%= livros.quantidade %></p>
+    <form action="/removeritemquant" method="post" onsubmit="return confirm('Tem certeza que deseja remover esta quantidade?');">
+    <input type="hidden" name="pedidoId" value="<%= pedido._id %>">
+    <input type="hidden" name="livroId" value="<%= livros._id %>">
+    <label for="quantidade">Quantidade a remover:</label>
+    <input type="number" name="quantidade" id="quantidade" min="1" max="<%= livros.quantidade %>" value="1" required>
+    <button type="submit" class="btn btn-danger">Remover</button>
+    </form>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    </div>
+    <% }) %>
+    <div class="row justify-content-end sticky-bottom">
+        <div class="col-md-4">
+            <ul class="list-group mb-3">
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                    <div>
+                        <h6 class="my-0">Total:</h6>
+                    </div>
+                    <span>R$<%= pedido.total %></span>
+
+                </li>
+            </ul>
+            <form action="/finalizarpedido" method="post">
+                <input type="hidden" name="pedidoId" value="<%=pedido._id%>">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Finalizar</button>
+            </form>
+        </div>
+    </div>
+
+    <% }); %>
+    <% } else { %>
+    <p>Nenhum pedido pendente disponível.</p>
+    <% } %>
+    </div>
+    
+    <h3>Pedidos Concluídos</h3>
+    <div class="row">
+    <% const pedidosConcluidos = pedidos.filter(pedido => pedido.status === 'concluido'); %>
+    <% if (pedidosConcluidos.length > 0) { %>
+    <% pedidosConcluidos.forEach(function(pedido) { %>
+    <div class="col-md-12 mb-3">
+    <div class="card">
+    <div class="card-body">
+    <h5 class="card-title">Pedido ID: <%= pedido._id %></h5>
+    <p class="card-text">Data: <%= new Date(pedido.dataPedido).toLocaleDateString() %></p>
+    <hr>
+    <% pedido.items.forEach((livros) => { %>
+    <div class="row mb-3">
+    <div class="col-md-2">
+    <img src="data:image/jpeg;base64,<%= livros.livroDetalhes.capa %>" alt="Capa do Livro" class="img-fluid">
+    </div>
+    <div class="col-md-4">
+    <h6 class="card-subtitle"><%= livros.livroDetalhes.titulo %></h6>
+    <p class="card-text"><%= livros.livroDetalhes.descricao %></p>
+    </div>
+    <div class="col-md-3">
+    <p class="card-text">Preço: R$ <%= livros.preco.toFixed(2) %></p>
+    </div>
+    <div class="col-md-3">
+    <p class="card-text">Quantidade: <%= livros.quantidade %></p>
+    </div>
+    </div>
+    <hr>
+    <% }) %>
+    <p class="card-text"><strong>Total: R$ <%= pedido.total.toFixed(2) %></strong></p>
+    </div>
+    </div>
+    </div>
+    <% }); %>
+    <% } else { %>
+    <p>Nenhum pedido concluído disponível.</p>
+    <% } %>
+    </div>

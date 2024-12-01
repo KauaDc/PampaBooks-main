@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const frontendController = require('../controladores/controladorFrontend');
-const autenticaToken = require('../middleware/autentica');
+const autenticaToken = require('../middlewares/autentica');
 const multer = require("multer")
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
