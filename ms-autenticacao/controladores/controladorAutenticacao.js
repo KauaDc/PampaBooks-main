@@ -57,3 +57,53 @@ exports.logout = async (req, res) => {
     res.status(200).json({ mensagem: 'Logout realizado com sucesso' });
     };
     
+exports.procurarUsuario = async (req, res) => {
+  const { usuarioId } = req.params;
+
+  try {
+  const usuario = await User.findById(usuarioId);
+  
+  if (!usuario) {
+  return res.status(404).send('Usuário não encontrado');
+  }
+  
+  res.json(usuario);
+  } catch (error) {
+  console.error('Erro ao buscar detalhes do usuário:', error.message);
+  res.status(500).send('Erro ao buscar detalhes do usuário: ' + error.message);
+  }
+  }
+
+  exports.editarPerfil = async (req, res) => {
+    const { usuarioid } = req.params;
+    console.log(req.params)
+    console.log(usuarioid)
+      try {
+        const usuario = await User.findById(usuarioid)
+        if (!usuario) {
+          return res.status(404).send('Usuário não encontrado');
+        }
+        res.json(usuario);
+  }catch (error) {
+    console.error('Erro ao buscar detalhes do usuário:', error.message);
+    res.status(500).send('Erro ao buscar detalhes do usuário: ' + error.message);
+    }
+  }
+
+  exports.processoEditarPerfil = async (req, res) => {
+    const { usuarioid } = req.params;
+    const data = req.body;
+
+try {
+const usuarioAtualizado = await User.findByIdAndUpdate(usuarioid, data, { new: true });
+
+if (!usuarioAtualizado) {
+return res.status(404).send('Usuário não encontrado');
+}
+
+res.json(usuarioAtualizado);
+} catch (error) {
+console.error('Erro ao atualizar dados do usuário:', error.message);
+res.status(500).send('Erro ao atualizar dados do usuário: ' + error.message);
+}
+}

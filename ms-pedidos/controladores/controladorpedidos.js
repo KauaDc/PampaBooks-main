@@ -75,7 +75,7 @@ return res.status(404).send('Nenhum pedido encontrado para este usuário');
 const pedidosComDetalhes = await Promise.all(pedidos.map(async (pedido) => {
 const itemsComDetalhes = await Promise.all(pedido.items.map(async (item) => {
 try {
-const respostaLivro = await axios.get(`http://localhost:3002/api/catalogo/livros/${item.livro}`);
+const respostaLivro = await axios.get(`http://localhost:3002/api/catalogo/livros/listarpedidos/${item.livro}`);
 return {
 ...item.toObject(),
 livroDetalhes: respostaLivro.data

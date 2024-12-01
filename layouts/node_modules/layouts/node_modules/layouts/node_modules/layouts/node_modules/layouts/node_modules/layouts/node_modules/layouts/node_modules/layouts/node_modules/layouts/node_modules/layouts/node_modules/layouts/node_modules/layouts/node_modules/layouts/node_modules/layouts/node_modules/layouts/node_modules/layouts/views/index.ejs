@@ -3,7 +3,14 @@
 
     <div class="row">
     <h1 class="text-center">Catálogo</h1>
-        
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <p>Livro adicionado ao carrinho!</p>
+          <button id="goToCart" class="btn-modal">Ir para o Carrinho</button>
+          <button id="continueShopping" class="btn-modal">Continuar Comprando</button>
+        </div>
+      </div>
     <div class="col-lg-3 filtros">
     <hr>
     
@@ -28,28 +35,26 @@
                 <div class="col-md-5 mb-4">
                 <div class="card" >
                 <div class="header">
+                    <a href="livros/<%= livro._id %>">
                 <div class="image ">
                 <img src="data:image/jpeg;base64,<%= livro.capa %>" alt="Capa do Livro" >
-                <span class="tag"><%= livro.categorias.nome %></span>
+                <span class="tag categoria"><%= livro.categorias.nome %></span>
+                <span class="tag preco ">R$<%= livro.preco %></span>
                 </div>
-
+            </a>
                 </div>
                 <div class="info">
                 <span class="title"><%= livro.titulo %></span>
                 </a>
                 <p class="description autor"><%= livro.autor %></p>
-                <p class="description"><%= livro.descricao %></p>
                 <form action="/criarpedido" method="post">
                 <input type="hidden" name="livroId" value="<%= livro._id %>">
                 <input type="hidden" name="preco" value="<%= livro.preco %>">
                 <div class="botao-container">
 
-                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-cart-plus"></i></button>
+                <button type="submit" id="btn-carrinho" onclick="showModal()" class="btn btn-primary"><i class="fa-solid fa-cart-plus"></i></button>
                 </form>
-                <form action="/avaliacoes" method="get">
-                <input type="hidden" name="livroId" value="<%= livro._id %>">
-                <button type="submit" class="btn btn-secondary"><i class="fa-solid fa-comment"></i></button>
-                </form>
+               
                 </div>
                 </div>
                 </div>
@@ -63,4 +68,6 @@
                 </div>
                 </div>
         
-            
+                <script>
+
+                    </script>

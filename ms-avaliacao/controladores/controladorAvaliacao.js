@@ -20,33 +20,13 @@ exports.adicionarAvaliacao = async (req, res) => {
 
 exports.listarAvaliacoes = async (req, res) => {
     const { livroId } = req.params;
-    console.log(livroId);
+    console.log(livroId)
     try {
-    // Buscar avaliações pelo livroId
     const avaliacoes = await Avaliacao.find({ livroId: livroId });
     if (!avaliacoes || avaliacoes.length === 0) {
     return res.json(null);
     }
-    
-    // Obter detalhes do livro para cada avaliação
-    const detalhesAvaliacao = await Promise.all(avaliacoes.map(async (avaliacao) => {
-    try {
-    const respostaLivro = await axios.get(`http://localhost:3002/api/catalogo/livros/${livroId}`);
-    return {
-    ...avaliacao.toObject(),
-    livroDetalhes: respostaLivro.data
-    };
-    } catch (erro) {
-    console.error(`Erro ao buscar detalhes do livro ${avaliacao.livro}:`, erro.message);
-    return {
-    ...avaliacao.toObject(),
-    livroDetalhes: null
-    };
-    }
-    }));
-    
-    // Retornar a resposta em JSON com os detalhes completos
-    res.json(detalhesAvaliacao);
+    res.json(avaliacoes);
     } catch (error) {
     console.error('Erro ao listar avaliações:', error.message);
     res.status(500).send('Erro ao listar avaliações: ' + error.message);

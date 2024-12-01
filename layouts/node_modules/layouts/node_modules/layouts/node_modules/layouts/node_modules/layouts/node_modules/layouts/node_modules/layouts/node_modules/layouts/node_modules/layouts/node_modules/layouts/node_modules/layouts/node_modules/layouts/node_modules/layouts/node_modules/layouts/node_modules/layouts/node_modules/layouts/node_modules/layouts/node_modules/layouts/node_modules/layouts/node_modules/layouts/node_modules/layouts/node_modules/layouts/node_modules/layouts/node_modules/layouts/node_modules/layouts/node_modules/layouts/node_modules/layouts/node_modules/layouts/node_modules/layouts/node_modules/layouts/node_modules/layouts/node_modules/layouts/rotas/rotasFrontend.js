@@ -16,9 +16,12 @@ router.post('/cadastro', frontendController.processoCadastro);
 router.get('/cadastrolivro', frontendController.cadastroLivro)
 router.post('/cadastrolivro',upload.single('capa'), frontendController.processoCadastroLivro);
 router.get('/pedidos',autenticaToken,frontendController.pedidos);
-router.post('/criarpedido',autenticaToken,frontendController.processoPedidos);router.post('/removeritemquant', frontendController.removerQuantidade)
+router.post('/criarpedido',autenticaToken,frontendController.processoPedidos);
+router.post('/removeritemquant', frontendController.removerQuantidade)
 router.post('/finalizarpedido', frontendController.finalizarPedido)
-router.get('/avaliacoes',frontendController.paginaAvaliacao)
 router.post('/avaliacoes',frontendController.processoAvaliacao)
 router.post('/logout',frontendController.logout)
+router.get('/livros/:id',frontendController.paginaDetalhes)
+router.get('/editarperfil/:id',frontendController.paginaEditarPerfil)
+router.post('/editarperfil/:id',frontendController.processoEditarPerfil)
 module.exports = router;

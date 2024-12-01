@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session')
 const flash = require('connect-flash');
 require('dotenv').config();
-
+const path = require('path');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -19,6 +19,7 @@ app.use(session({
 })) 
 
 app.use(flash());
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
 res.locals.user = req.session.usuario || null;

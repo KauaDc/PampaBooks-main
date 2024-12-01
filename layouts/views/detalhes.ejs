@@ -1,0 +1,102 @@
+
+
+<div class="book-details">
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <p>Livro adicionado ao carrinho!</p>
+          <button id="goToCart" class="btn-modal">Ir para o Carrinho</button>
+          <button id="continueShopping" class="btn-modal">Continuar Comprando</button>
+        </div>
+      </div>
+    <div class="book-cover">
+        <img src="data:image/jpeg;base64,<%= livro.livro.capa %>" alt="Capa do Livro" >
+    </div>
+    <div class="book-info">
+      <h1 class="book-title"><%= livro.livro.titulo %></h1>
+      <p class="book-author">Autor: <%= livro.livro.autor %></p>
+      <p class="book-price">Preço: R$<%= livro.livro.preco %></p>
+      <p class="book-description"><%= livro.livro.descricao %></p>
+      <form action="/criarpedido" method="post">
+        <input type="hidden" name="livroId" value="<%= livro.livro._id %>">
+        <input type="hidden" name="preco" value="<%= livro.livro.preco %>">
+        <button class="btn-add-to-cart" onclick="showModal()">Adicionar ao Carrinho</button>
+        </form>
+    </div>
+  </div>
+
+
+  <div class="reviews-section">
+    <button id="btn-show-form" class="btn-add-review">Adicionar Avaliação</button>
+
+    <!-- Formulário oculto para adicionar uma avaliação -->
+    <div id="review-form" class="review-form hidden">
+    <h2>Adicionar Avaliação</h2>
+        <form id="add-review-form" method="post" action="/avaliacoes">
+            <div class="form-group">
+            <label for="avaliacao">Nota (1 a 5):</label>
+            <select id="avaliacao" name="avaliacao" class="form-control" required>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            </select>
+            <div class="star-rating" id="star-display">
+                <span class="star" data-value="1">☆</span>
+                <span class="star" data-value="2">☆</span>
+                <span class="star" data-value="3">☆</span>
+                <span class="star" data-value="4">☆</span>
+                <span class="star" data-value="5">☆</span>                
+            </div>
+            <div class="form-group">
+            <label for="comentario">Comentário:</label>
+            <textarea id="comentario" name="comentario" class="form-control" rows="3" required></textarea>
+            </div>
+            <input type="hidden" id="livroId" name="livroId" value="<%= livro.livro._id %>">
+            <input type="hidden" id="usuarioId" name="usuarioId" value="<%= usuario %>"> 
+            <button type="submit" class="btn btn-primary">Enviar Avaliação</button>
+            </form>
+    </div>
+    </div>
+
+    <h2>Avaliações dos Leitores</h2>
+    <% livro.avaliacoes.forEach(avaliacao => { %>
+        <div class="review">
+            <h3 class="review-author">Avaliado por: <%= avaliacao.usuario.nome %></h3>
+            <p class="review-content"><%= avaliacao.comentario %></p>
+            <div class="review-rating">
+                Avaliação: <span class="stars"> <%= '★'.repeat(avaliacao.avaliacao) %> <%= '☆'.repeat(5 - avaliacao.nota) %> </span>
+            </div>
+        </div>
+    <% }) %>
+</div>
+</div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+const btnShowForm = document.getElementById('btn-show-form');
+const reviewForm = document.getElementById('review-form');
+
+btnShowForm.addEventListener('click', function() {
+reviewForm.classList.toggle('hidden');
+});
+
+const selectNota = document.getElementById('avaliacao');
+const starDisplay = document.getElementById('star-display');
+const stars = starDisplay.querySelectorAll('.star');
+
+selectNota.addEventListener('change', function() {
+const value = this.value;
+
+stars.forEach(star => {
+if (star.getAttribute('data-value') <= value) {
+star.classList.add('selected');
+} else {
+star.classList.remove('selected');
+}
+});
+});
+});
+
+</script>

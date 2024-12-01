@@ -88,11 +88,28 @@ exports.paginaCatalogo = async (req, res) => {
          categorias: resposta.data.categoria,
          usuario: req.session.usuario
       });
+      console.log(req.session.usuario)
+
    } catch (erro) {
       console.error('Erro ao buscar livros:');
    }
 }
-
+exports.paginaDetalhes = async (req, res) => {
+   const { id } = req.params;
+   var usuarioId
+   if (req.session.usuario) {
+       usuarioId = req.session.usuario.id;
+   }else{
+       usuarioId = null;
+   }
+   try {
+      const resposta = await axios.get(`http://localhost:3002/api/catalogo/livros/${id}`);
+      
+      res.render('detalhes', { livro: resposta.data, usuario:usuarioId });
+   } catch (erro) {
+      console.error('Erro ao buscar livro:', erro.message);
+   }
+}
 //rotas catalgo post
 
 
@@ -150,6 +167,8 @@ exports.pedidos = async (req, res) => {
    const usuarioid = req.session.usuario.id
    try{
       const resposta =  await axios.get(`http://localhost:3005/api/pedidos/usuario/${usuarioid}/pedidos`);
+      console.log(resposta.data)
+      
       res.render('pedidos', {pedidos: resposta.data, usuario: req.session.usuario});
 
    }
@@ -163,7 +182,6 @@ exports.processoPedidos = async (req, res) => {
    const livro = { livroId: req.body.livroId, preco: req.body.preco};
    try {
        const resposta = await axios.post('http://localhost:3005/api/pedidos/criarpedido', { usuarioid, livro});
-         res.redirect('/');
       } catch (erro) {
        console.error('Erro ao adicionar livro ao pedido:', erro.message);
        res.status(500).send('Erro ao adicionar livro ao pedido: ' + erro.message);
@@ -194,30 +212,6 @@ exports.finalizarPedido = async (req, res) => {
    };
 
 //rotas avaliacao
-exports.paginaAvaliacao = async (req, res) => {
-   var usuarioId
-   if (req.session.usuario) {
-       usuarioId = req.session.usuario.id;
-   }else{
-       usuarioId = null;
-   }
-  const {livroId} = req.query
-   console.log(livroId)
-   try{
-      const resposta = await axios.get(`http://localhost:3006/api/avaliacao/${livroId}`);
-      console.log(resposta.data)
-      console.log(resposta.data)
-      if(resposta.data == null){
-         res.render('avaliacao', {usuario:usuarioId,livroId:livroId, avaliacao: null});
-      }
-      res.render('avaliacao', {usuario:usuarioId,livroId:livroId, avaliacao: resposta.data});
-}
-catch(erro){  
-   console.error('Erro ao buscar avaliações:', erro.message);
-}
-}
-
-
 
 
 exports.processoAvaliacao = async (req, res) => {
@@ -232,3 +226,29 @@ exports.processoAvaliacao = async (req, res) => {
      res.status(500).send('Erro ao avaliar livro: ' + erro.message);
    }
  };
+
+exports.paginaEditarPerfil = async (req, res) => {
+   var usuarioId
+   if (req.session.usuario) {
+       usuarioId = req.session.usuario.id;
+   }else
+   {
+      res.redirect('/login')
+   }
+   try {
+      const resposta = await axios.get(`http://localhost:3000/api/autenticacao/editarperfil/${usuarioId}`);
+      res.render('editarPerfil', {usuario: resposta.data});
+   } catch (erro) {
+      console.error('Erro ao buscar perfil:', erro.message);
+   }
+}
+exports.processoEditarPerfil = async (req, res) => {
+   const { usuarioId, nome, email } = req.body;
+   console.log(usuarioId)
+   try {
+      const resposta = await axios.put(`http://localhost:3000/api/autenticacao/editarperfil/${usuarioId}`, { nome, email });
+      res.redirect('/'); 
+   } catch (erro) {
+      console.error('Erro ao editar perfil:', erro.message);
+   }
+}

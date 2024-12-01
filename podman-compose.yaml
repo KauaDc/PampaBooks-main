@@ -1,0 +1,40 @@
+version: '3'
+services:
+autenticacao:
+  build: ./ms-autenticacao
+  ports:
+    - "3000:3000"
+  environment:
+    - MONGO_URI=mongodb+srv://DbUsers:x8D27EzZvuJxRQpz@pampabooks.t4r49.mongodb.net/
+    - JWT_SECRET=seuSegredoJWT
+
+catalogo:
+  build: ./ms-catalogo
+  ports:
+    - "3002:3002"
+  environment:
+    - MONGO_URI=mongodb+srv://DbUsers:x8D27EzZvuJxRQpz@pampabooks.t4r49.mongodb.net/
+
+pedidos:
+  build: ./ms-pedidos
+  ports:
+    - "3005:3005"
+  environment:
+    - MONGO_URI=mongodb+srv://DbUsers:x8D27EzZvuJxRQpz@pampabooks.t4r49.mongodb.net/
+
+avaliacoes:
+  build: ./ms-avaliacao
+  ports:
+    - "3006:3006"
+  environment:
+    - MONGO_URI=mongodb+srv://DbUsers:x8D27EzZvuJxRQpz@pampabooks.t4r49.mongodb.net/
+
+layouts:
+  build: ./layout
+  ports:
+    - "3001:3001"
+  depends_on:
+    - autenticacao
+    - catalogo
+    - pedidos
+    - avaliacoes
