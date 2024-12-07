@@ -91,48 +91,59 @@ exports.listarCategorias = async (req, res) => {
 
 
 exports.listarLivrosporId = async (req, res) => {
-const { livroId } = req.params;
+   const { livroId } = req.params;
+   console.log('Buscando detalhes do livro', livroId);
+   
+   try {
+       // Buscar os detalhes do livro no banco de dados e popula o campo 'categorias'
+       const livro = await Livro.findById(livroId).populate('categorias');
 
-try {
-// Buscar os detalhes do livro no banco de dados e popula o campo 'categorias'
-const livro = await Livro.findById(livroId).populate('categorias');
+       if (!livro) {
+           return res.status(404).send('Livro não encontrado'); // Retorna 404 se o livro não for encontrado
+       }
 
-if (!livro) {
-return res.status(404).send('Livro não encontrado'); // Retorna 404 se o livro não for encontrado
-}
+         // Buscar as avaliações do livro chamando a API externa
+         const respostaAvaliacoes = await axios.get(`http://localhost:3006/api/avaliacao/${livroId}`);
+         const avaliacoes = respostaAvaliacoes.data;
 
-// Buscar as avaliações do livro chamando a API externa
-const respostaAvaliacoes = await axios.get(`http://localhost:3006/api/avaliacao/${livroId}`);
-const avaliacoes = respostaAvaliacoes.data;
+         // Verificar se há avaliações
+         if (!avaliacoes || avaliacoes.length === 0) {
+            return res.json({
+                  livro: livro.toObject(), // Converte o documento Mongoose para objeto JavaScript
+                  avaliacoes: [], // Retorna um array vazio se não houver avaliações
+                  mensagem: 'Nenhuma avaliação encontrada para este livro' // Mensagem informativa
+            });
+         }
 
-// Obter informações dos usuários para cada avaliação chamando outra API externa
-const avaliacoesComUsuarios = await Promise.all(avaliacoes.map(async avaliacao => {
-try {
-const respostaUsuario = await axios.get(`http://localhost:3000/api/autenticacao/procurarusuarios/${avaliacao.usuarioId}`);
-const usuarioDetalhes = respostaUsuario.data;
+         // Obter informações dos usuários para cada avaliação chamando outra API externa
+         const avaliacoesComUsuarios = await Promise.all(avaliacoes.map(async avaliacao => {
+            try {
+                  const respostaUsuario = await axios.get(`http://localhost:3000/api/autenticacao/procurarusuarios/${avaliacao.usuarioId}`);
+                  const usuarioDetalhes = respostaUsuario.data;
 
-return {
-...avaliacao,
-usuario: usuarioDetalhes
+                  return {
+                     ...avaliacao,
+                     usuario: usuarioDetalhes
+                  };
+            } catch (userError) {
+                  console.error(`Erro ao buscar dados do usuário ${avaliacao.usuarioId}:`, userError.message);
+                  return avaliacao; // Retorna a avaliação sem detalhes do usuário se houver erro
+            }
+         }));
+
+         const detalhesComAvaliacoes = {
+            livro: livro.toObject(), // Converte o documento Mongoose para objeto JavaScript
+            avaliacoes: avaliacoesComUsuarios // Adiciona as avaliações com usuários, se existirem
+         };
+
+       // Enviar a resposta em formato JSON
+       res.json(detalhesComAvaliacoes);
+   } catch (error) {
+       console.error('Erro ao buscar detalhes do livro ou avaliações:', error.message);
+       res.status(500).send('Erro ao buscar detalhes do livro ou avaliações: ' + error.message); // Responde com erro 500 e mensagem detalhada
+   }
 };
-} catch (userError) {
-console.error(`Erro ao buscar dados do usuário ${avaliacao.usuarioId}:`, userError.message);
-return avaliacao; // Retorna a avaliação sem detalhes do usuário se houver erro
-}
-}));
 
-const detalhesComAvaliacoes = {
-livro: livro.toObject(), // Converte o documento Mongoose para objeto JavaScript
-avaliacoes: avaliacoesComUsuarios || [] // Garante que não retorne valor indefinido
-};
-
-// Enviar a resposta em formato JSON
-res.json(detalhesComAvaliacoes);
-} catch (error) {
-console.error('Erro ao buscar detalhes do livro ou avaliações:', error.message);
-res.status(500).send('Erro ao buscar detalhes do livro ou avaliações: ' + error.message); // Responde com erro 500 e mensagem detalhada
-}
-};
 
 exports.listarLivrosPedidos = async (req, res) => {
    const { livroId } = req.params;

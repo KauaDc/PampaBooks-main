@@ -9,7 +9,6 @@ const session = require('express-session');
 const flash = require('connect-flash'); 
 const path = require('path'); 
 
-
 // Configura o body-parser para parsear JSON e dados de formulários
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -45,11 +44,6 @@ app.set('layout', 'layout')
 app.use(express.static('public'))
 const rotasFrontend = require('./rotas/rotasFrontend')
 app.use('/', rotasFrontend)
-
-
-
-
-
 
 app.listen( process.env.PORTA, () => {
    console.log('Servidor rodando na porta', process.env.PORTA)

@@ -1,5 +1,6 @@
                     // Função para mostrar o modal
                     function showModal() {
+                      
                         const modal = document.getElementById('cartModal');
                         modal.style.display = 'block';
                       }

@@ -16,10 +16,12 @@
     </div>
     <div class="col-md-4">
     <h5 class="card-title"><%= livros.livroDetalhes.titulo %></h5>
-    <p class="card-text"><%= livros.livroDetalhes.descricao %></p>
     </div>
     <div class="col-md-6">
-    <p class="card-text">Preço: <%= livros.preco %></p>
+        <% const preco1 = livros.preco
+        let preco2 = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(preco1)
+        %>
+    <p class="card-text">Preço: <%= preco2 %></p>
     <p class="card-text">Quantidade: <%= livros.quantidade %></p>
     <form action="/removeritemquant" method="post" onsubmit="return confirm('Tem certeza que deseja remover esta quantidade?');">
     <input type="hidden" name="pedidoId" value="<%= pedido._id %>">
@@ -42,7 +44,10 @@
                     <div>
                         <h6 class="my-0">Total:</h6>
                     </div>
-                    <span>R$<%= pedido.total %></span>
+                    <% 
+                    let precoPedido = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(pedido.total)
+                    %>
+                    <span><%= precoPedido %></span>
 
                 </li>
             </ul>
@@ -61,7 +66,7 @@
     
     <h3>Pedidos Concluídos</h3>
     <div class="row">
-    <% const pedidosConcluidos = pedidos.filter(pedido => pedido.status === 'concluido'); %>
+    <% const pedidosConcluidos = pedidos.filter(pedido => pedido.status === 'Finalizado'); %>
     <% if (pedidosConcluidos.length > 0) { %>
     <% pedidosConcluidos.forEach(function(pedido) { %>
     <div class="col-md-12 mb-3">
@@ -77,10 +82,12 @@
     </div>
     <div class="col-md-4">
     <h6 class="card-subtitle"><%= livros.livroDetalhes.titulo %></h6>
-    <p class="card-text"><%= livros.livroDetalhes.descricao %></p>
     </div>
     <div class="col-md-3">
-    <p class="card-text">Preço: R$ <%= livros.preco.toFixed(2) %></p>
+        <%
+        const preco = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(livros.preco)
+        %>
+    <p class="card-text">Preço: <%= preco %></p>
     </div>
     <div class="col-md-3">
     <p class="card-text">Quantidade: <%= livros.quantidade %></p>
@@ -88,7 +95,10 @@
     </div>
     <hr>
     <% }) %>
-    <p class="card-text"><strong>Total: R$ <%= pedido.total.toFixed(2) %></strong></p>
+    <% 
+     let precoPedido = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(pedido.total)
+     %>
+    <p class="card-text"><strong>Total: <%= precoPedido %></strong></p>
     </div>
     </div>
     </div>
