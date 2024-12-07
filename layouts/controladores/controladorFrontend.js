@@ -13,6 +13,7 @@ exports.processoLogin = async (req, res) => {
    try {
        // Faz uma requisição POST para a API de autenticação com o email e a senha
        const resposta = await axios.post('http://localhost:3000/api/autenticacao/login', { email, senha });
+       console.log(resposta.data)
        req.session.usuario = resposta.data.sessaoUsuario; // Armazena os dados do usuário na sessão
        res.json(resposta.data); // Retorna a resposta da API como JSON
    } catch (erro) {
@@ -28,13 +29,8 @@ exports.logout = async(req, res) => {
       // Faz uma requisição POST para a API de logout
       const resposta = await axios.post('http://localhost:3000/api/autenticacao/logout')
       // Destroi a sessão do usuário
-      req.session.destroy((err) => {
-         if (err) {
-            console.error('Erro ao destruir a sessão:', err);
-            res.status(500).send('Erro ao fazer logout.');
-         } 
-         res.redirect('/'); // Redireciona para a página inicial
-      });
+         req.session.destroy();
+         res.redirect('/login'); // Redireciona para a página inicial
    } catch (erro) {
       console.log(erro)
    }
@@ -77,16 +73,19 @@ exports.processoCadastro = async (req, res) => {
 
 // Função para renderizar a página do catálogo
 exports.paginaCatalogo = async (req, res) => {
+   var usuarioId = req.session.usuario ? req.session.usuario.id : null;
+
    try {
       // Faz uma requisição GET para a API de catálogo
       const resposta = await axios.get('http://localhost:3002/api/catalogo/livros');
       // Renderiza a página do catálogo com os dados recebidos
+      
+console.log(req.session.usuario)
       res.render('index', {
          livros: resposta.data.livro,
          categorias: resposta.data.categoria,
-         usuario: req.session.usuario
+         usuario: usuarioId
       });
-      console.log(req.session.usuario)
    } catch (erro) {
       console.error('Erro ao buscar livros:');
    }
@@ -214,7 +213,7 @@ exports.processoAvaliacao = async (req, res) => {
    try {
       // Faz uma requisição POST para a API de avaliação
       const resposta = await axios.post('http://localhost:3006/api/avaliacao/novaavaliacao', { usuarioId, livroId, avaliacao, comentario });
-      res.redirect('/');
+    res.redirect(`/livros/${livroId}`);
    } catch (erro) {
       console.error('Erro ao avaliar livro:', erro.message);
       res.status(500).send('Erro ao avaliar livro: ' + erro.message);

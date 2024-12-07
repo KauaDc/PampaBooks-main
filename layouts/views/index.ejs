@@ -39,7 +39,10 @@
                 <div class="image ">
                 <img src="data:image/jpeg;base64,<%= livro.capa %>" alt="Capa do Livro" >
                 <span class="tag categoria"><%= livro.categorias.nome %></span>
-                <span class="tag preco ">R$<%= livro.preco %></span>
+                <% const preco1 = livro.preco
+                let preco2 = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(preco1)
+                %>
+                <span class="tag preco "><%= preco2 %></span>
                 </div>
             </a>
                 </div>
@@ -47,15 +50,18 @@
                 <span class="title"><%= livro.titulo %></span>
                 </a>
                 <p class="description autor"><%= livro.autor %></p>
+                <% if (usuario) { %>
                 <form action="/criarpedido" method="post">
                 <input type="hidden" name="livroId" value="<%= livro._id %>">
                 <input type="hidden" name="preco" value="<%= livro.preco %>">
                 <div class="botao-container">
-
                 <button type="submit" id="btn-carrinho" onclick="showModal()" class="btn btn-primary"><i class="fa-solid fa-cart-plus"></i></button>
                 </form>
-               
-                </div>
+                
+              </div>
+              <% } else { %>
+                <a href="/login" class="btn btn-success">Faça para adicionar ao carrinho</a>
+                <% } %>
                 </div>
                 </div>
                 </div>

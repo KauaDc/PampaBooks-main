@@ -19,7 +19,7 @@
                 <li><a class="dropdown-item" href="/editarperfil/<%= usuario.id %>">Editar Perfil</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <form action="/logout" method="post">
-                  <li><button type="submit" class="dropdown-item">Sair</button></li>
+                  <li><button type="submit" onclick="deleteAllCookies()" class="dropdown-item">Sair</button></li>
                 </form>
                 <% } else { %>
                   <li><a class="dropdown-item" href="/login">Entrar</a></li>
@@ -54,5 +54,15 @@ async function requisicao(params) {
     window.location.href = 'http://localhost:3001/pedidos'; 
 
 }
+
+function deleteAllCookies() {
+    document.cookie.split(';').forEach(cookie => {
+        const eqPos = cookie.indexOf('=');
+        const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
+        document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    });
+}
+
+
 
   </script>

@@ -76,11 +76,11 @@
     <% livro.avaliacoes.forEach(avaliacao => { %>
         <div class="review">
             <h3 class="review-author">Avaliado por: <%= avaliacao.usuario.nome %></h3>
-            <p class="review-content"><%= avaliacao.comentario %></p>
             <div class="review-rating">
-                Avaliação: <span class="stars"> <%= '★'.repeat(avaliacao.avaliacao) %> <%= '☆'.repeat(5 - avaliacao.nota) %> </span>
+              Nota: <span class="stars"> <%= '★'.repeat(avaliacao.avaliacao) %> <%= '☆'.repeat(5 - avaliacao.avaliacao) %> </span>
             </div>
-        </div>
+            <p class="review-content"><%= avaliacao.comentario %></p>
+          </div>
     <% }) %>
 </div>
 </div>
