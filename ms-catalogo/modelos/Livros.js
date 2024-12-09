@@ -8,7 +8,6 @@ const LivrosSchema = new Schema({
     descricao: {type: String, required: true},
     categorias: {type: Schema.Types.ObjectId, ref:"Categoria",  required: false},
     preco: {type: Number, required: true},
-    avaliacao:{type: Number}
 })
 
 module.exports = mongoose.model('Livro', LivrosSchema);
