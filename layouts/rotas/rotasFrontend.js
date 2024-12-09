@@ -34,13 +34,13 @@ router.get('/pedidos', autenticaToken, frontendController.pedidos);
 router.post('/criarpedido', autenticaToken, frontendController.processoPedidos);
 
 // Rota para processar a remoção de quantidade de um item no pedido
-router.post('/removeritemquant', frontendController.removerQuantidade);
+router.post('/removeritemquant', autenticaToken, frontendController.removerQuantidade);
 
 // Rota para processar a finalização de um pedido
-router.post('/finalizarpedido', frontendController.finalizarPedido);
+router.post('/finalizarpedido', autenticaToken, frontendController.finalizarPedido);
 
 // Rota para processar a avaliação de um livro
-router.post('/avaliacoes', frontendController.processoAvaliacao);
+router.post('/avaliacoes',autenticaToken, frontendController.processoAvaliacao);
 
 // Rota para processar o logout
 router.post('/logout', frontendController.logout);
@@ -49,9 +49,9 @@ router.post('/logout', frontendController.logout);
 router.get('/livros/:id', frontendController.paginaDetalhes);
 
 // Rota para renderizar a página de perfil do usuário
-router.get('/editarperfil/:id',frontendController.paginaEditarPerfil)
+router.get('/editarperfil/:id',autenticaToken,frontendController.paginaEditarPerfil)
 
 // Rota para processar a edição do perfil do usuário
-router.post('/editarperfil/:id',frontendController.processoEditarPerfil)
+router.post('/editarperfil/:id',autenticaToken,frontendController.processoEditarPerfil)
 
 module.exports = router;

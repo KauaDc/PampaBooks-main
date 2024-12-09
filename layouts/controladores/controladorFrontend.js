@@ -229,7 +229,7 @@ exports.paginaEditarPerfil = async (req, res) => {
    try {
       // Faz uma requisição GET para a API de edição de perfil
       const resposta = await axios.get(`http://localhost:3000/api/autenticacao/editarperfil/${usuarioId}`);
-      res.render('editarPerfil', { usuario: resposta.data });
+      res.render('editarperfil', { usuario: resposta.data });
    } catch (erro) {
       console.error('Erro ao buscar perfil:', erro.message);
    }

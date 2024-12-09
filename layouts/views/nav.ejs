@@ -16,7 +16,7 @@
             </a>
             <ul class="dropdown-menu">
               <% if (usuario) { %>
-                <li><a class="dropdown-item" href="/editarperfil/<%= usuario.id %>">Editar Perfil</a></li>
+                <li><a class="dropdown-item" href="/editarperfil/<%= usuario %>">Editar Perfil</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <form action="/logout" method="post">
                   <li><button type="submit" onclick="deleteAllCookies()" class="dropdown-item">Sair</button></li>
